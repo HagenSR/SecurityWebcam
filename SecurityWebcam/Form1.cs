@@ -9,53 +9,58 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CoenM.ImageHash;
-using CoenM.ImageHash.HashAlgorithms;
+using Emgu.CV;
+using Emgu.CV.ImgHash;
+using System.Collections;
 
 namespace ImageHashingApp
 {
     public partial class Form1 : Form
     {
+        private VideoCapture cap;
+        Queue<Emgu.CV.Mat> queue;
         public Form1()
         {
             InitializeComponent();
+            cap = new VideoCapture();
+            queue = new Queue<Emgu.CV.Mat>(2);
+
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string one = textBox1.Text;
-            string two = textBox2.Text;
+
+            queue.Enqueue(cap.QueryFrame());
+            imageBox1.Image = queue.Peek().ToImage<Emgu.CV.Structure.Bgr, Byte>(false).Resize(imageBox1.Width, imageBox1.Height, Emgu.CV.CvEnum.Inter.Lanczos4);
+            imageBox2.Image = queue.Last().ToImage<Emgu.CV.Structure.Bgr, Byte>(false).Resize(imageBox1.Width, imageBox1.Height, Emgu.CV.CvEnum.Inter.Lanczos4);
             //string two = "C:\\Users\\seanr\\source\\repos\\ImageHashingApp\\Dog.jpg";
-            this.label1.Text = imageCompare(one, two, 5).ToString();
+            this.label1.Text = imageCompare().ToString();
         }
 
-        private bool imageCompare(String one, String two, double error)
+        private bool imageCompare()
         {
-            ulong imageHashOne, imageHashTwo;
+            if (queue.Count > 1)    
+            {
+                Emgu.CV.Mat imageHashOne = new Mat(), imageHashTwo = new Mat();
+                Emgu.CV.Mat a = queue.Dequeue();
+                Emgu.CV.Mat b = queue.Peek();
 
-            using (var stream = File.OpenRead(one))
-            {
-                imageHashOne = ImageHashExtensions.Hash(new AverageHash(), stream);
+                AverageHash t = new Emgu.CV.ImgHash.AverageHash();
+                t.Compute(a, imageHashOne);
+                t.Compute(b, imageHashTwo);
+                double percentageImageSimilarity = t.Compare(imageHashOne, imageHashTwo);
+                double er = 100 - percentageImageSimilarity;
+                if (percentageImageSimilarity < (int)numericUpDown1.Value)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            using (var stream = File.OpenRead(two))
-            {
-                imageHashTwo = ImageHashExtensions.Hash(new AverageHash(), stream);
-            }
-
-            double percentageImageSimilarity = CompareHash.Similarity(imageHashOne, imageHashTwo);
-            double er = 1 - percentageImageSimilarity;
-            if (100 - percentageImageSimilarity < (int)numericUpDown1.Value)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            else { return false; }
         }
-
-        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
+    
     }
 }

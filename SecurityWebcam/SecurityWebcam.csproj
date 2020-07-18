@@ -39,6 +39,12 @@
     <Reference Include="CoenM.ImageSharp.ImageHash, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CoenM.ImageSharp.ImageHash.1.0.0-beta0004\lib\net472\CoenM.ImageSharp.ImageHash.dll</HintPath>
     </Reference>
+    <Reference Include="Emgu.CV.Platform.NetFramework, Version=4.3.0.3890, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.4.3.0.3890\lib\net461\Emgu.CV.Platform.NetFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.Platform.NetStandard, Version=4.3.0.3890, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.4.3.0.3890\lib\net461\Emgu.CV.Platform.NetStandard.dll</HintPath>
+    </Reference>
     <Reference Include="SixLabors.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SixLabors.Core.1.0.0-beta0008\lib\netstandard2.0\SixLabors.Core.dll</HintPath>
     </Reference>
@@ -114,5 +120,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.Toolset.3.1.0\build\Microsoft.Net.Compilers.Toolset.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.Toolset.3.1.0\build\Microsoft.Net.Compilers.Toolset.props'))" />
+    <Error Condition="!Exists('..\packages\Emgu.CV.runtime.windows.4.3.0.3890\build\Emgu.CV.runtime.windows.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Emgu.CV.runtime.windows.4.3.0.3890\build\Emgu.CV.runtime.windows.targets'))" />
   </Target>
+  <Import Project="..\packages\Emgu.CV.runtime.windows.4.3.0.3890\build\Emgu.CV.runtime.windows.targets" Condition="Exists('..\packages\Emgu.CV.runtime.windows.4.3.0.3890\build\Emgu.CV.runtime.windows.targets')" />
 </Project>
